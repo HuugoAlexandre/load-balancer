@@ -1,7 +1,6 @@
 package br.edu.ifal.redes.loadbalancer.server;
 
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.Socket;
 
 public class ServerNode {
@@ -23,19 +22,24 @@ public class ServerNode {
     }
 
     public void forward(Socket origin) {
-        try (Socket socket = new Socket(host, port)) {
-            final InputStream inputStream = origin.getInputStream();
-            final OutputStream outputStream = socket.getOutputStream();
-
-            byte[] buffer = new byte[8192];
-            int length;
-
-            while ((length = inputStream.read(buffer)) != -1) {
-                outputStream.write(buffer, 0, length);
-                outputStream.flush();
-            }
+        try (final Socket socket = new Socket(host, port)) {
+            // copyStream(origin.getInputStream(), socket.getOutputStream());
+            copyStream(socket.getInputStream(), origin.getOutputStream());
         } catch (Exception exception) {
             exception.printStackTrace();
+        }
+    }
+
+    private void copyStream(InputStream in, OutputStream out) {
+        try {
+            byte[] buffer = new byte[8192];
+            int length;
+            while ((length = in.read(buffer)) != -1) {
+                out.write(buffer, 0, length);
+                out.flush();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

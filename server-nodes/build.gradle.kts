@@ -20,7 +20,7 @@ tasks.test {
 }
 
 application {
-    mainClass.set("br.edu.ifal.redes.loadbalancer.LBApplication")
+    mainClass.set("br.edu.ifal.redes.loadbalancer.node.LBSNApplication")
 }
 
 tasks.jar {

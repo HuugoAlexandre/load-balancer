@@ -8,7 +8,8 @@ import java.net.Socket;
 
 public class Server {
 
-    private static final int PORT = 80; // roda na porta HTTP
+    private static final int PORT = 80;
+
     public static final CircularLinkedList<ServerNode> NODES = new CircularLinkedList<>();
 
     private final ServerSocket server;
@@ -18,6 +19,8 @@ public class Server {
     }
 
     public void lockThreadAndStart() {
+        System.out.println("Load Balancer running on " + PORT);
+
         while (true) {
             try (Socket socket = this.server.accept()) {
                 final SocketHandler handler = new SocketHandler(socket);

@@ -18,6 +18,10 @@ public class CircularLinkedList<T> {
         list.remove(item);
     }
 
+    public int size() {
+        return list.size();
+    }
+
     public T next() {
         if (list.isEmpty()) {
             return null;

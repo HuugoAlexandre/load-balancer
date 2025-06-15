@@ -19,13 +19,14 @@ public class SocketHandler extends Thread {
 
     @Override
     public void start() {
-        try (PrintWriter writer = new PrintWriter(client.getOutputStream());
-             BufferedReader reader = new BufferedReader(new InputStreamReader(client.getInputStream()))
+        try (
+                PrintWriter writer = new PrintWriter(client.getOutputStream());
+                BufferedReader reader = new BufferedReader(new InputStreamReader(client.getInputStream()))
         ) {
             System.out
                     .format(
                             "[INFO] Nova conexão recebida: %s:%s",
-                            client.getInetAddress().getHostName(),
+                            client.getInetAddress().getHostAddress(),
                             client.getPort()
                     ).println();
 
@@ -35,11 +36,14 @@ public class SocketHandler extends Thread {
                 final ServerNode node = Server.NODES.next();
 
                 if (node == null) {
+                    System.out.println("[INFO] Utilizando servidor padrão.");
+
                     sendDefaultResponse(writer);
 
                     return;
                 }
 
+                System.out.format("[INFO] [FORWARD] Enviando dados para o servidor na porta " + node.getPort()).println();
                 node.forward(client);
 
                 return;
@@ -54,8 +58,8 @@ public class SocketHandler extends Thread {
                 Server.NODES.add(node);
             }
 
-            System.out.format("[INFO] Novo servidor adicionado ao pool: %s:%s", host, port).println();
-            writer.printf("Servidor adicionado com sucesso: %s:%s", host, port);
+            System.out.format("[INFO] Novo servidor adicionado ao pool: %s:%s (Quantidade: %d)", host, port, Server.NODES.size()).println();
+            writer.printf("[LOAD-BALANCER] Servidor adicionado com sucesso: %s:%s", host, port);
 
             writer.flush();
         } catch (Exception exception) {
@@ -69,13 +73,13 @@ public class SocketHandler extends Thread {
     }
 
     private void sendDefaultResponse(PrintWriter writer) {
-        final String response = "Hello from Load Balancer.";
+        final String response = "Hello from Load Balancer";
         final int length = response.length();
 
-        writer.print("HTTP/1.1 200 OK\r\n");
-        writer.print("Content-Type: text/plain\r\n");
-        writer.print("Content-Length: " + length + "\r\n");
-        writer.print("\r\n");
+        writer.println("HTTP/1.1 200 OK");
+        writer.println("Content-Type: text/plain");
+        writer.println("Content-Length: " + length);
+        writer.println();
         writer.print(response);
 
         writer.flush();
