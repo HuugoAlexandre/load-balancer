@@ -19,7 +19,7 @@ public class Server {
     }
 
     public void lockThreadAndStart() {
-        System.out.println("Load Balancer running on " + PORT);
+        System.out.println("[INFO] Load Balancer rodando na porta " + PORT);
 
         while (true) {
             try (Socket socket = this.server.accept()) {

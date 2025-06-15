@@ -65,7 +65,7 @@ public class AppServer {
     }
 
     private void connectNode() {
-        System.out.println("Tentando conectar ao load balancer...");
+        System.out.println("[INFO] Tentando conectar ao load balancer...");
 
         try (final Socket socket = new Socket(LOAD_BALANCER_HOSTNAME, LOAD_BALANCER_PORT);
              final PrintWriter writer = new PrintWriter(socket.getOutputStream());
@@ -82,8 +82,6 @@ public class AppServer {
         } catch (Exception exception) {
             exception.printStackTrace();
         }
-
-        System.out.println("Fim da tentativa de conexão.");
     }
 
 }
