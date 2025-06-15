@@ -8,7 +8,7 @@ public final class LBApplication {
         try {
             final Server server = new Server();
 
-            server.lockAndStart();
+            server.lockThreadAndStart();
         } catch (Exception exception) {
             exception.printStackTrace();
         }

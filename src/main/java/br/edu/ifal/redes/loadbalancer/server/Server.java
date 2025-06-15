@@ -1,5 +1,7 @@
 package br.edu.ifal.redes.loadbalancer.server;
 
+import br.edu.ifal.redes.loadbalancer.utils.CircularLinkedList;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -7,6 +9,7 @@ import java.net.Socket;
 public class Server {
 
     private static final int PORT = 80; // roda na porta HTTP
+    public static final CircularLinkedList<ServerNode> NODES = new CircularLinkedList<>();
 
     private final ServerSocket server;
 
@@ -14,7 +17,7 @@ public class Server {
         this.server = new ServerSocket(PORT);
     }
 
-    public void lockAndStart() {
+    public void lockThreadAndStart() {
         while (true) {
             try (Socket socket = this.server.accept()) {
                 final SocketHandler handler = new SocketHandler(socket);
