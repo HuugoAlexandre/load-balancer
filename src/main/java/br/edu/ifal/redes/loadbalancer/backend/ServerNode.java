@@ -1,4 +1,4 @@
-package br.edu.ifal.redes.loadbalancer.server;
+package br.edu.ifal.redes.loadbalancer.backend;
 
 import java.io.*;
 import java.net.Socket;
@@ -24,7 +24,10 @@ public class ServerNode {
     public void forward(Socket origin) {
         try (final Socket socket = new Socket(host, port)) {
             // copyStream(origin.getInputStream(), socket.getOutputStream());
+
+            System.out.println("iai");
             copyStream(socket.getInputStream(), origin.getOutputStream());
+            System.out.println("iai 2");
         } catch (Exception exception) {
             exception.printStackTrace();
         }
@@ -40,6 +43,21 @@ public class ServerNode {
             }
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    public boolean isAlive() {
+        try (
+                final Socket socket = new Socket(host, port);
+                final PrintWriter writer = new PrintWriter(socket.getOutputStream());
+                final BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()))
+        ) {
+            writer.println("integrity");
+            writer.flush();
+
+            return reader.readLine() != null;
+        } catch (Exception exception) {
+            return false;
         }
     }
 
