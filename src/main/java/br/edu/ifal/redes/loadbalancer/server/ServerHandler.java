@@ -67,10 +67,15 @@ public class ServerHandler {
         final ServerNode node = new ServerNode(host, Integer.parseInt(port));
 
         try (PrintWriter writer = new PrintWriter(client.getOutputStream())) {
+            ServerNodeController.putServer(node);
+
             writer.println("[LOAD-BALANCER -> NODE] Servidor adicionado ao pool de servidores.");
+            writer.flush();
         }
 
-        ServerNodeController.putServer(node);
+
+
+
     }
 
 }

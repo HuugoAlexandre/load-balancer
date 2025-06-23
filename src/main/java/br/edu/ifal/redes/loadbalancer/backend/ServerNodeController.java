@@ -38,7 +38,7 @@ public final class ServerNodeController {
         SCHEDULED_EXECUTOR_SERVICE.scheduleAtFixedRate(
                 new ServerNodeIntegrityRunnable(),
                 15,
-                15,
+                5,
                 TimeUnit.SECONDS
         );
     }
