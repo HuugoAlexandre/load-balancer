@@ -71,7 +71,7 @@ public class AppServer {
              final PrintWriter writer = new PrintWriter(socket.getOutputStream());
              final BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()))
         ) {
-            writer.println("lb/connect-server");
+            writer.println("node");
             writer.println(hostname);
             writer.println(port);
             writer.flush();

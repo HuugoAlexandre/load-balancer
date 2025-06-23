@@ -9,7 +9,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-public class ServerHandler extends Thread {
+public class ServerHandler {
 
     private final Socket client;
 
@@ -71,16 +71,6 @@ public class ServerHandler extends Thread {
         }
 
         ServerNodeController.putServer(node);
-    }
-
-    @Override
-    public synchronized void start() {
-        handle();
-    }
-
-    @Override
-    public void run() {
-        start();
     }
 
 }

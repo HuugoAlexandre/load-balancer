@@ -23,13 +23,49 @@ public class ServerNode {
 
     public void forward(Socket origin) {
         try (final Socket socket = new Socket(host, port)) {
-            // copyStream(origin.getInputStream(), socket.getOutputStream());
+            final Thread clientToServer = new Thread(() -> {
+                try {
+                    copyStream(origin.getInputStream(), socket.getOutputStream());
+                } catch (Exception exception) {
+                    exception.printStackTrace();
+                } finally {
+                    try {
+                        socket.close();
+                    } catch (Exception exception) {
+                        exception.printStackTrace();
+                    }
+                }
+            });
 
-            System.out.println("iai");
-            copyStream(socket.getInputStream(), origin.getOutputStream());
-            System.out.println("iai 2");
+            final Thread serverToClient = new Thread(
+                () -> {
+                    try {
+                        copyStream(socket.getInputStream(), origin.getOutputStream());
+                    } catch (Exception exception) {
+                        exception.printStackTrace();
+                    } finally {
+                        try {
+                            origin.close();
+                        } catch (Exception exception) {
+                            exception.printStackTrace();
+                        }
+                    }
+                }
+            );
+
+            clientToServer.start();
+            serverToClient.start();
+
+            clientToServer.join();
+            serverToClient.join();
         } catch (Exception exception) {
             exception.printStackTrace();
+        } finally {
+            try {
+                origin.close();
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
         }
     }
 
@@ -37,12 +73,14 @@ public class ServerNode {
         try {
             byte[] buffer = new byte[8192];
             int length;
+
             while ((length = in.read(buffer)) != -1) {
                 out.write(buffer, 0, length);
-                out.flush();
             }
+
+            out.flush();
         } catch (IOException e) {
-            e.printStackTrace();
+            // ignorando o erro pois eh o esperado mesmo
         }
     }
 

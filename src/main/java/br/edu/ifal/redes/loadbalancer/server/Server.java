@@ -18,10 +18,13 @@ public class Server {
         System.out.format("[INFO] Load Balancer rodando na porta %d", PORT).println();
 
         while (true) {
-            try (Socket socket = this.server.accept()) {
+            try {
+                final Socket socket = this.server.accept();
                 final ServerHandler handler = new ServerHandler(socket);
 
-                handler.start();
+                final Thread thread = new Thread(handler::handle);
+
+                thread.start();
             } catch (Exception exception) {
                 exception.printStackTrace();
             }
